@@ -1,23 +1,81 @@
+mod bench;
 use nsync_rs::{Condvar, Counter, Mutex, Once, RwLock, Time};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 
+use crate::bench::{
+    CONTENTION_LEVELS, OPS_PER_THREAD, THREAD_COUNTS, benchmark_nsync_mutex,
+    benchmark_nsync_rwlock, benchmark_std_mutex, benchmark_std_rwlock,
+};
+
 fn main() {
-    println!("Basic Mutex Example: ");
-    mutex_example();
+    println!("=== nsync vs std::sync Benchmark ===");
+    println!("Operations per thread: {}", OPS_PER_THREAD);
+    println!();
 
-    println!("\n RwLock Example: ");
-    rwlock_example();
+    // Warm up
+    println!("Warming up...");
+    benchmark_std_mutex(2, 10, 1);
+    benchmark_nsync_mutex(2, 10, 1);
 
-    println!("\n Condition Variable Example: ");
-    condvar_example();
+    // Mutex benchmarks
+    println!("\n--- Mutex Benchmarks ---");
+    for &(contention_name, work_us, critical_us) in CONTENTION_LEVELS {
+        println!(
+            "\nContention: {} ({}μs work, {}μs critical)",
+            contention_name, work_us, critical_us
+        );
+        println!("Threads  std::Mutex   nsync::Mutex  Speedup");
+        println!("-------  ----------   ------------  -------");
 
-    println!("\n Once Example: ");
-    once_example();
+        for &num_threads in THREAD_COUNTS {
+            let std_time = benchmark_std_mutex(num_threads, work_us, critical_us);
+            let nsync_time = benchmark_nsync_mutex(num_threads, work_us, critical_us);
 
-    println!("\n Counter Example: ");
-    counter_example();
+            let speedup = std_time.as_secs_f64() / nsync_time.as_secs_f64();
+            let faster = if speedup > 1.0 { "faster" } else { "slower" };
+
+            println!(
+                "{:7}  {:>10.3}ms  {:>10.3}ms  {:.2}x {}",
+                num_threads,
+                std_time.as_secs_f64() * 1000.0,
+                nsync_time.as_secs_f64() * 1000.0,
+                speedup.max(1.0 / speedup),
+                faster
+            );
+        }
+    }
+
+    // RwLock benchmarks
+    println!("\n--- RwLock Benchmarks (90% reads, 10% writes) ---");
+    for &(contention_name, work_us, critical_us) in CONTENTION_LEVELS {
+        println!(
+            "\nContention: {} ({}μs work, {}μs critical)",
+            contention_name, work_us, critical_us
+        );
+        println!("Threads  std::RwLock  nsync::RwLock  Speedup");
+        println!("-------  -----------  -------------  -------");
+
+        for &num_threads in THREAD_COUNTS {
+            let std_time = benchmark_std_rwlock(num_threads, work_us, critical_us);
+            let nsync_time = benchmark_nsync_rwlock(num_threads, work_us, critical_us);
+
+            let speedup = std_time.as_secs_f64() / nsync_time.as_secs_f64();
+            let faster = if speedup > 1.0 { "faster" } else { "slower" };
+
+            println!(
+                "{:7}  {:>11.3}ms  {:>11.3}ms  {:.2}x {}",
+                num_threads,
+                std_time.as_secs_f64() * 1000.0,
+                nsync_time.as_secs_f64() * 1000.0,
+                speedup.max(1.0 / speedup),
+                faster
+            );
+        }
+    }
+
+    println!("\nBenchmark complete!");
 }
 
 fn mutex_example() {
