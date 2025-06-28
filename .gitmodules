@@ -1,0 +1,3 @@
+[submodule "vendored/nsync"]
+	path = vendored/nsync
+	url = git@github.com:google/nsync.git

@@ -1,0 +1,20 @@
+[package]
+name = "nsync-rs"
+version = "0.1.0"
+edition = "2024"
+build = "build.rs"
+description = "Rust bindings for google's nsync library"
+
+[lib]
+name = "nsync_rs"
+path = "src/lib.rs"
+
+[workspace]
+members = [ ".", "example" ]
+
+
+[build-dependencies]
+bindgen = "0.72.0"
+cc = "1.2.25"
+pkg-config = "0.3.32"
+
