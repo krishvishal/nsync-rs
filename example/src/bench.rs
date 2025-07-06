@@ -318,7 +318,7 @@ pub fn run_mutex_shootout() {
     println!("Keys generated.\n");
 
     // Test different thread counts
-    let thread_counts = [32]; // [1, 2, 8, 32];
+    let thread_counts = [2, 4, 8, 16];
 
     for &thread_count in &thread_counts {
         println!(
@@ -525,22 +525,6 @@ pub fn run_simple_counter_benchmark(threads: usize, iterations: usize) {
             "slower"
         }
     );
-
-    println!();
-    println!("Expected results (based on Cosmopolitan blog post):");
-    println!("• nsync should be 2-3x faster than std::Mutex");
-    println!("• SpinLock should be slower due to CPU waste");
-    println!("• This tests worst-case: high contention + tiny critical sections");
-
-    if nsync_vs_std > 2.0 {
-        println!("\n🚀 EXCELLENT: nsync shows dramatic improvement!");
-    } else if nsync_vs_std > 1.2 {
-        println!("\n✅ GOOD: nsync shows solid improvement");
-    } else if nsync_vs_std > 0.8 {
-        println!("\n≈ SIMILAR: Performance is roughly equivalent");
-    } else {
-        println!("\n❌ UNEXPECTED: std::Mutex outperformed nsync");
-    }
 }
 
 #[cfg(test)]
