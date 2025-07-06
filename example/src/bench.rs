@@ -385,8 +385,7 @@ pub fn run_mutex_shootout() {
 
 /// Simple counter benchmark for comparison with the original
 pub fn run_simple_counter_benchmark(threads: usize, iterations: usize) {
-    println!("=== Cosmopolitan-style Mutex Benchmark ===");
-    println!("Replicating: https://justine.lol/fastmutex/");
+    println!("=== Simple counter Mutex Benchmark ===");
     println!(
         "Threads: {}, Iterations per thread: {}, Total ops: {}",
         threads,
@@ -648,23 +647,4 @@ mod tests {
             }
         }
     }
-
-    // #[test]
-    // fn test_overflow_safety() {
-    //     let mut cache = SimpleLruCache::new(2);
-
-    //     // Set access counter to near overflow
-    //     cache.access_counter = 18446744073709551615 - 5;
-
-    //     cache.set("key1", "value1");
-    //     cache.set("key2", "value2");
-
-    //     // These operations should handle overflow gracefully
-    //     cache.get(&"key1");
-    //     cache.get(&"key2");
-    //     cache.set("key3", "value3"); // Should trigger eviction
-
-    //     // Should still work correctly
-    //     assert!(cache.get(&"key2").is_some() || cache.get(&"key3").is_some());
-    // }
 }
