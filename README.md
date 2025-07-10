@@ -55,17 +55,14 @@ This crate includes benchmarks comparing nsync with standard library mutexes and
 
 ```bash
 cd example
-cargo run --release counter 8 100000    # Simple counter benchmark
 cargo run --release shootout             # LRU cache benchmark
-cargo run --release                      # Run both benchmarks
 ```
 
 ### Benchmark Results
 
-The benchmarks test two scenarios:
+The benchmarks test scenario:
 
-1. **Simple Counter**: Multiple threads incrementing a shared counter
-2. **LRU Cache**: More realistic workload with larger critical sections
+1. **LRU Cache**: More realistic workload with larger critical sections
 
 Typical results show nsync performing 1.3-1.7x better than std::Mutex in high-contention scenarios, with the advantage increasing as thread count grows.
 
