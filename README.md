@@ -86,7 +86,7 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 - [Google's nsync library](https://github.com/google/nsync) for the underlying implementation
 - The Rust community for inspiration on safe API design
-- [Justine Tunney's mutex research](https://justine.lol/fastmutex/)
+- [Justine Tunney's mutex research](https://justine.lol/mutex/)
 
 ## Related Projects
 
